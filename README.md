@@ -48,11 +48,18 @@ In part `b` we will:
 1. Call `update` on a Switchboard Feed.
 1. Watch as the aggregator populates with results!
 
+In part `c` we will:
+1. Create data feed without creating new fulfillment manager.
+
 Part a (Run a Switchboard node on your Fulfillment Manager):
 ```shell
 cd "$(git rev-parse --show-toplevel)/ts-example"
 solana airdrop 5 example-keypair.json
-ts-node example_2a.ts --payerFile=example-keypair.json
+ts-node example_2a.ts \
+          --payerFile=example-keypair.json \
+          --apiEndpoint=https://www.binance.us/api/v3/ticker/price?symbol=BTCUSD \
+          --apiJsonPath="$.price"
+          
 export FULFILLMENT_MANAGER_KEY=<FULFILLMENT MANAGER KEY HERE>
 export AUTH_KEY=<AUTH KEY HERE>
 docker-compose up
@@ -64,4 +71,15 @@ FEED_PUBKEY=<FEED PUBKEY HERE>
 UPDATE_AUTH_KEY=<UPDATE AUTH PUBKEY HERE>
 ts-node example_2b.ts --payerFile=example-keypair.json \
   --dataFeedPubkey=${FEED_PUBKEY?} --updateAuthPubkey=${UPDATE_AUTH_KEY?}
+```
+
+Part c:
+If you have already created a fulfillment manager and want to use it to create a new job.
+
+```shell
+ts-node example_2c.ts \
+          --payerFile=example-keypair.json \
+          --fulfillmentFile=fulfillment-keypair.json
+          --apiEndpoint=https://www.binance.us/api/v3/ticker/price?symbol=BTCUSD \
+          --apiJsonPath="$.price"
 ```

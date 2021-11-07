@@ -34,7 +34,13 @@ let argv = yargs(process.argv).options({
     describe: 'Keypair file to pay for transactions.',
     demand: true,
   },
-}).argv;
+  cluster: {
+    type: "string",
+    describe: "devnet, testnet, or mainnet-beta",
+    demand: false,
+    default: "devnet",
+  },
+}).parseSync();
 
 function toCluster(cluster: string): Cluster {
   switch (cluster) {
@@ -52,7 +58,7 @@ async function sleep(ms: number): Promise<void> {
 }
 
 async function main() {
-  let cluster = 'devnet';
+  let cluster = argv.cluster;
   let url = clusterApiUrl(toCluster(cluster), true);
   let connection = new Connection(url, 'processed');
   let payerKeypair = JSON.parse(fs.readFileSync(resolve(argv.payerFile), 'utf-8'));
